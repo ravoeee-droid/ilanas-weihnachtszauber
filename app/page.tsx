@@ -145,6 +145,16 @@ const CHARACTER_FRIENDS = [
     tagline: "Bester Freund & Mutmacher"
   },
   {
+    name: "Mama",
+    image: "/characters/mama.webp",
+    tagline: "Immer an Ilanas Seite"
+  },
+  {
+    name: "Papa",
+    image: "/characters/papa.webp",
+    tagline: "Lustiger Mitabenteurer"
+  },
+  {
     name: "Mila & Zlata",
     image: "/characters/mila-zlata.webp",
     tagline: "Freundinnen aus dem Katzenland"
@@ -153,6 +163,11 @@ const CHARACTER_FRIENDS = [
     name: "Dino",
     image: "/characters/dino.webp",
     tagline: "Mutiger Freund aus dem Zaubertal"
+  },
+  {
+    name: "Bello",
+    image: "/characters/bello.webp",
+    tagline: "Treuer Freund für jedes Abenteuer"
   },
   {
     name: "Wolkenläufer",
