@@ -195,6 +195,14 @@ const QUICK_REASONS = [
   "Bettfertig ohne Streit"
 ];
 
+const NEGATIVE_REASONS = [
+  "Nicht zugehört",
+  "Aufräumen nicht geklappt",
+  "Regel nicht eingehalten",
+  "Unfreundlich gewesen",
+  "Bettfertig nicht geklappt"
+];
+
 function uid(prefix: string) {
   return prefix + "-" + Date.now() + "-" + Math.random().toString(16).slice(2);
 }
@@ -549,6 +557,32 @@ export default function Home() {
     if ("vibrate" in navigator) {
       navigator.vibrate?.(amount > 0 ? 18 : 10);
     }
+  }
+
+  function undoLastEntry() {
+    guardParent(() => {
+      if (!data.history.length) {
+        showToast("Es gibt noch nichts zum Rückgängigmachen.");
+        return;
+      }
+
+      setData((current) => {
+        const last = current.history[0];
+        if (!last) return current;
+
+        return {
+          ...current,
+          points: Math.max(0, current.points - last.points),
+          totalEarned:
+            last.points > 0
+              ? Math.max(0, current.totalEarned - last.points)
+              : current.totalEarned,
+          history: current.history.slice(1)
+        };
+      });
+
+      showToast("↩ Letzte Änderung wurde rückgängig gemacht.");
+    });
   }
 
   function guardParent(action: () => void) {
@@ -1556,6 +1590,18 @@ export default function Home() {
                         </small>
                       </div>
                     </div>
+                  </div>
+
+                  <div className="reasonChips negativeReasonChips">
+                    {NEGATIVE_REASONS.map((quickReason) => (
+                      <button
+                        key={quickReason}
+                        className={reason === quickReason ? "active" : ""}
+                        onClick={() => setReason(quickReason)}
+                      >
+                        {quickReason}
+                      </button>
+                    ))}
                   </div>
 
                   <div className="deductGrid">
