@@ -1,12 +1,17 @@
 {
+  "id": "/",
   "name": "Ilanas Weihnachtszauber",
   "short_name": "Weihnachtszauber",
-  "description": "Fleißsterne, Wünsche und Weihnachtsmagie für Ilana.",
+  "description": "Fleißsterne, Wünsche, Puschelplumps und Weihnachtsmagie für Ilana.",
+  "lang": "de",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#06152d",
-  "theme_color": "#071a35",
+  "display_override": ["standalone", "fullscreen"],
+  "background_color": "#061321",
+  "theme_color": "#061321",
   "orientation": "landscape",
+  "categories": ["kids", "family", "lifestyle"],
   "icons": [
     {
       "src": "/icon.svg",
