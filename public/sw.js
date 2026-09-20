@@ -11,8 +11,11 @@ const APP_SHELL = [
   "/world/dreams.webp",
   "/characters/ilana.webp",
   "/characters/puschelplumps.webp",
+  "/characters/mama.webp",
+  "/characters/papa.webp",
   "/characters/mila-zlata.webp",
   "/characters/dino.webp",
+  "/characters/bello.webp",
   "/characters/wolkenlaeufer.webp",
   "/characters/grantelbart.webp",
   "/characters/santa.webp"
