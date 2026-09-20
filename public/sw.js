@@ -1,9 +1,17 @@
-const CACHE = "ilanas-weihnachtszauber-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icon.svg"];
+const CACHE = "ilanas-weihnachtszauber-v3";
+const APP_SHELL = [
+  "/",
+  "/manifest.webmanifest",
+  "/icon.svg",
+  "/world/hero.webp",
+  "/world/underwater.webp",
+  "/world/characters.webp"
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE)
+    caches
+      .open(CACHE)
       .then((cache) => cache.addAll(APP_SHELL))
       .then(() => self.skipWaiting())
   );
@@ -11,7 +19,8 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys()
+    caches
+      .keys()
       .then((keys) =>
         Promise.all(
           keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))
@@ -24,15 +33,31 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
+  const request = event.request;
+  const url = new URL(request.url);
+
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request).catch(() => caches.match("/"))
+    );
+    return;
+  }
+
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(event.request, clone));
-        return response;
-      })
-      .catch(() =>
-        caches.match(event.request).then((cached) => cached || caches.match("/"))
-      )
+    caches.match(request).then((cached) => {
+      const network = fetch(request)
+        .then((response) => {
+          if (response && response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => cached);
+
+      return cached || network;
+    })
   );
 });
