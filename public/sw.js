@@ -1,11 +1,21 @@
-const CACHE = "ilanas-weihnachtszauber-v3";
+const CACHE = "ilanas-weihnachtszauber-v4";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",
   "/icon.svg",
   "/world/hero.webp",
   "/world/underwater.webp",
-  "/world/characters.webp"
+  "/world/characters.webp",
+  "/world/catland.webp",
+  "/world/dinoworld.webp",
+  "/world/dreams.webp",
+  "/characters/ilana.webp",
+  "/characters/puschelplumps.webp",
+  "/characters/mila-zlata.webp",
+  "/characters/dino.webp",
+  "/characters/wolkenlaeufer.webp",
+  "/characters/grantelbart.webp",
+  "/characters/santa.webp"
 ];
 
 self.addEventListener("install", (event) => {
