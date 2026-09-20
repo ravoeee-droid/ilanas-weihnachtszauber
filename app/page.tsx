@@ -97,7 +97,7 @@ const WORLDS: World[] = [
     subtitle: "Mila & Zlata zeigen den Weg",
     description:
       "Ein verschneites Katzenreich voller Pfotenabdrücke, Laternen und kleiner Überraschungen.",
-    image: "/world/hero.webp",
+    image: "/world/catland.webp",
     accent: "#ff9fbd",
     icon: "🐾",
     mission: "Räume heute drei Dinge ganz alleine an ihren Platz.",
@@ -110,7 +110,7 @@ const WORLDS: World[] = [
     subtitle: "Mutig · neugierig · freundlich",
     description:
       "Hier zählt nicht, wer am lautesten brüllt, sondern wer mutig hilft und freundlich bleibt.",
-    image: "/world/hero.webp",
+    image: "/world/dinoworld.webp",
     accent: "#9ad86d",
     icon: "🦕",
     mission: "Probiere heute etwas Neues aus, auch wenn du erst ein bisschen unsicher bist.",
@@ -123,7 +123,7 @@ const WORLDS: World[] = [
     subtitle: "Ruhe · Träume · Geborgenheit",
     description:
       "Wenn der Tag langsam leise wird, trägt Wolkenläufer alle schönen Gedanken zu den Sternen.",
-    image: "/world/characters.webp",
+    image: "/world/dreams.webp",
     accent: "#b9b4ff",
     icon: "☁️",
     mission: "Mach dich heute ohne Streit bettfertig und erzähle, was dein schönster Moment war.",
@@ -131,6 +131,45 @@ const WORLDS: World[] = [
     friends: ["Wolkenläufer", "Mama", "Papa"]
   }
 ];
+
+
+const CHARACTER_FRIENDS = [
+  {
+    name: "Ilana",
+    image: "/characters/ilana.webp",
+    tagline: "Unsere kleine Abenteurerin"
+  },
+  {
+    name: "Puschelplumps",
+    image: "/characters/puschelplumps.webp",
+    tagline: "Bester Freund & Mutmacher"
+  },
+  {
+    name: "Mila & Zlata",
+    image: "/characters/mila-zlata.webp",
+    tagline: "Freundinnen aus dem Katzenland"
+  },
+  {
+    name: "Dino",
+    image: "/characters/dino.webp",
+    tagline: "Mutiger Freund aus dem Zaubertal"
+  },
+  {
+    name: "Wolkenläufer",
+    image: "/characters/wolkenlaeufer.webp",
+    tagline: "Begleiter durch das Traumland"
+  },
+  {
+    name: "Grantelbart",
+    image: "/characters/grantelbart.webp",
+    tagline: "Passt auf die Sterne auf"
+  },
+  {
+    name: "Weihnachtsmann",
+    image: "/characters/santa.webp",
+    tagline: "Sieht jede kleine gute Tat"
+  }
+] as const;
 
 const QUICK_REASONS = [
   "Zimmer aufgeräumt",
@@ -762,7 +801,7 @@ export default function Home() {
 
           <article className="glassCard puschelCard">
             <div className="puschelAvatar">
-              <span>P</span>
+              <img src="/characters/puschelplumps.webp" alt="Puschelplumps" />
             </div>
             <div className="puschelWords">
               <div className="cardEyebrow">PUSCHELPLUMPS SAGT</div>
@@ -802,6 +841,26 @@ export default function Home() {
               <small>Tippe hier und reise in ihre Welten.</small>
             </div>
           </button>
+
+          <div className="characterRail" aria-label="Freunde aus Puschelplumps Welt">
+            {CHARACTER_FRIENDS.map((friend) => (
+              <button
+                className="characterCard"
+                key={friend.name}
+                onClick={() =>
+                  friend.name === "Grantelbart"
+                    ? openParentCenter()
+                    : setActiveTab("worlds")
+                }
+              >
+                <img src={friend.image} alt={friend.name} />
+                <span>
+                  <strong>{friend.name}</strong>
+                  <small>{friend.tagline}</small>
+                </span>
+              </button>
+            ))}
+          </div>
         </section>
 
         <section className="sectionBlock compactSection">
