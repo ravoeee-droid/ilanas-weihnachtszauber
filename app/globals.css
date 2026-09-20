@@ -2810,7 +2810,7 @@ input:focus-visible {
 
 .characterRail {
   display: grid;
-  grid-template-columns: repeat(7, minmax(122px, 1fr));
+  grid-template-columns: repeat(10, minmax(122px, 1fr));
   gap: 10px;
   margin-top: 12px;
   padding: 2px 1px 5px;
