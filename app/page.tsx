@@ -455,7 +455,7 @@ export default function Home() {
                 ? "Eine gute Tat"
                 : "Heute hat es noch nicht ganz geklappt"),
             createdAt: Date.now(),
-            actor: actualChange > 0 ? "santa" : "grantelbart"
+            actor: actualChange > 0 ? ("santa" as const) : ("grantelbart" as const)
           },
           ...current.history
         ].slice(0, 180)
