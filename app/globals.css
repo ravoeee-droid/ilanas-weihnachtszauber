@@ -3118,3 +3118,31 @@ input:focus-visible {
     font-size: .58rem;
   }
 }
+
+
+/* --- Parent safety polish --- */
+.negativeReasonChips button {
+  border-color: rgba(225, 132, 132, .14);
+  background: rgba(151, 77, 77, .08);
+}
+
+.negativeReasonChips button:hover,
+.negativeReasonChips button.active {
+  color: #ffd0d0;
+  border-color: rgba(229, 139, 139, .34);
+  background: rgba(151, 77, 77, .17);
+}
+
+.settingsList button.undoAction {
+  border-color: rgba(248, 203, 112, .15);
+  background: rgba(248, 203, 112, .055);
+}
+
+.settingsList button:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.settingsList button:disabled:hover {
+  transform: none;
+}
