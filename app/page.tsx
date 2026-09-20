@@ -401,6 +401,25 @@ export default function Home() {
     [data.history]
   );
 
+  const todayKey = dateKey(Date.now());
+  const dailyWorld = useMemo(() => {
+    const start = new Date(new Date().getFullYear(), 0, 0);
+    const dayOfYear = Math.floor(
+      (Date.now() - start.getTime()) / 86400000
+    );
+    return WORLDS[dayOfYear % WORLDS.length];
+  }, [todayKey]);
+
+  function isWorldCompletedToday(world: World) {
+    const reason = world.title + ": Tagesmission geschafft";
+    return data.history.some(
+      (entry) =>
+        entry.points > 0 &&
+        entry.reason === reason &&
+        dateKey(entry.createdAt) === todayKey
+    );
+  }
+
   const nextMilestone =
     [25, 50, 100, 150, 200, 300].find((value) => value > data.points) ||
     Math.ceil((data.points + 1) / 100) * 100;
@@ -692,6 +711,12 @@ export default function Home() {
   }
 
   function completeWorldMission(world: World) {
+    if (isWorldCompletedToday(world)) {
+      showToast("✨ Diese Mission hat Ilana heute schon geschafft.");
+      setSelectedWorld(null);
+      return;
+    }
+
     guardParent(() => {
       adjustPoints(world.reward, world.title + ": Tagesmission geschafft");
       setSelectedWorld(null);
@@ -829,6 +854,42 @@ export default function Home() {
               </button>
             </div>
           </article>
+        </section>
+
+        <section className="sectionBlock dailyMissionSection">
+          <div className="sectionHeading">
+            <div>
+              <span className="sectionKicker">HEUTIGE MISSION</span>
+              <h2>Ein kleines Abenteuer für heute</h2>
+            </div>
+            <span className={"dailyStatus " + (isWorldCompletedToday(dailyWorld) ? "done" : "")}>
+              {isWorldCompletedToday(dailyWorld) ? "Geschafft ✓" : "+" + dailyWorld.reward + " Sterne"}
+            </span>
+          </div>
+
+          <button
+            className={"dailyMissionCard " + (isWorldCompletedToday(dailyWorld) ? "completed" : "")}
+            onClick={() => setSelectedWorld(dailyWorld)}
+            style={{
+              backgroundImage:
+                "linear-gradient(90deg, rgba(3,12,24,.90), rgba(3,12,24,.25)), url(" +
+                dailyWorld.image +
+                ")"
+            }}
+          >
+            <div className="dailyMissionCopy">
+              <span>{dailyWorld.icon} {dailyWorld.subtitle}</span>
+              <strong>{dailyWorld.mission}</strong>
+              <small>
+                {isWorldCompletedToday(dailyWorld)
+                  ? "Heute bereits erledigt – morgen wartet eine neue Mission."
+                  : "Tippe hier, wenn Ilana die Mission geschafft hat."}
+              </small>
+            </div>
+            <div className="dailyMissionAction">
+              {isWorldCompletedToday(dailyWorld) ? "✓" : "→"}
+            </div>
+          </button>
         </section>
 
         <section className="sectionBlock">
@@ -1225,7 +1286,9 @@ export default function Home() {
             gespeichert
           </div>
           <button className="profileButton" onClick={openParentCenter}>
-            <span className="profileAvatar">I</span>
+            <span className="profileAvatar profileAvatarPhoto">
+              <img src="/characters/ilana.webp" alt="" />
+            </span>
             <span className="profileCopy">
               <strong>Ilana</strong>
               <small>{data.points} Sterne</small>
@@ -1311,12 +1374,19 @@ export default function Home() {
               </div>
 
               <button
-                className="missionButton"
+                className={"missionButton " + (isWorldCompletedToday(selectedWorld) ? "missionDone" : "")}
                 onClick={() => completeWorldMission(selectedWorld)}
+                disabled={isWorldCompletedToday(selectedWorld)}
               >
-                <span>✨</span>
-                Mission geschafft
-                <strong>+{selectedWorld.reward} Sterne</strong>
+                <span>{isWorldCompletedToday(selectedWorld) ? "✓" : "✨"}</span>
+                {isWorldCompletedToday(selectedWorld)
+                  ? "Heute schon geschafft"
+                  : "Mission geschafft"}
+                <strong>
+                  {isWorldCompletedToday(selectedWorld)
+                    ? "Morgen geht es weiter"
+                    : "+" + selectedWorld.reward + " Sterne"}
+                </strong>
               </button>
             </div>
           </div>
@@ -1476,7 +1546,9 @@ export default function Home() {
                 <section className="parentSection grantelSection">
                   <div className="parentSectionHeading">
                     <div>
-                      <span className="parentMiniIcon negative">☁</span>
+                      <span className="parentMiniIcon negative grantelPortrait">
+                        <img src="/characters/grantelbart.webp" alt="" />
+                      </span>
                       <div>
                         <strong>Grantelbart nimmt Sterne mit</strong>
                         <small>
