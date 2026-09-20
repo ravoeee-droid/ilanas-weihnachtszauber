@@ -377,6 +377,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [toast, setToast] = useState("");
   const [burstKey, setBurstKey] = useState(0);
+  const [magicMoment, setMagicMoment] = useState<HistoryEntry | null>(null);
   const [selectedWorld, setSelectedWorld] = useState<World | null>(null);
 
   const [pinOpen, setPinOpen] = useState(false);
@@ -401,6 +402,7 @@ export default function Home() {
 
   const pendingParentAction = useRef<null | (() => void)>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const lastAnimatedEntry = useRef<string | null>(null);
 
   const days = daysUntilChristmas();
   const streak = useMemo(() => calculateStreak(data.history), [data.history]);
@@ -475,6 +477,7 @@ export default function Home() {
       if (!saved) saved = await readIndexedDb();
 
       if (mounted && saved) {
+        lastAnimatedEntry.current = saved.history[0]?.id || null;
         setData(saved);
       }
 
@@ -502,6 +505,23 @@ export default function Home() {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     void writeIndexedDb(data);
   }, [data, hydrated]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
+    const latest = data.history[0];
+    if (!latest || latest.id === lastAnimatedEntry.current) return;
+
+    lastAnimatedEntry.current = latest.id;
+    setMagicMoment(latest);
+
+    const timer = window.setTimeout(() => {
+      setMagicMoment(null);
+    }, 3400);
+
+    return () => window.clearTimeout(timer);
+  }, [data.history, hydrated]);
+
 
   function showToast(message: string) {
     setToast(message);
@@ -565,6 +585,8 @@ export default function Home() {
         showToast("Es gibt noch nichts zum Rückgängigmachen.");
         return;
       }
+
+      lastAnimatedEntry.current = data.history[1]?.id || null;
 
       setData((current) => {
         const last = current.history[0];
@@ -1300,6 +1322,59 @@ export default function Home() {
       )}
 
       {toast && <div className="toast">{toast}</div>}
+
+      {magicMoment && (
+        <div
+          className={"magicMomentOverlay " + (magicMoment.points > 0 ? "positive" : "negative")}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setMagicMoment(null);
+          }}
+        >
+          <section className="magicMomentCard">
+            <button
+              className="magicMomentClose"
+              onClick={() => setMagicMoment(null)}
+              aria-label="Schließen"
+            >
+              ×
+            </button>
+
+            <div className="magicMomentPortrait">
+              <span className="magicMomentGlow" />
+              <img
+                src={
+                  magicMoment.points > 0
+                    ? "/characters/santa.webp"
+                    : "/characters/grantelbart.webp"
+                }
+                alt=""
+              />
+            </div>
+
+            <div className="magicMomentCopy">
+              <span className="magicMomentKicker">
+                {magicMoment.points > 0
+                  ? "DER WEIHNACHTSMANN HAT ES GESEHEN"
+                  : "GRANTELBART PASST AUF"}
+              </span>
+              <div className="magicMomentPoints">
+                {magicMoment.points > 0 ? "+" : ""}
+                {magicMoment.points}
+                <small>{Math.abs(magicMoment.points) === 1 ? " Stern" : " Sterne"}</small>
+              </div>
+              <h2>
+                {magicMoment.points > 0
+                  ? "Ein neuer Stern leuchtet für Ilana."
+                  : "Heute wandert ein Stern zurück in den Sack."}
+              </h2>
+              <p>{magicMoment.reason}</p>
+              <button onClick={() => setMagicMoment(null)}>
+                {magicMoment.points > 0 ? "Weiter funkeln ✨" : "Morgen klappt es besser"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
 
       <header className="nativeTopbar">
         <button
